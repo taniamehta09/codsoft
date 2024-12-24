@@ -22,3 +22,279 @@
 </body>
 </html>
 
+#styles.css
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #ecf0f3;
+}
+
+.quiz-container {
+  background: #ffffff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  width: 80%;
+  max-width: 600px;
+  text-align: center;
+}
+
+.question-text {
+  font-size: 20px;
+  margin-bottom: 20px;
+}
+
+.options-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.option {
+  background: #ecf0f3;
+  border: none;
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.3s;
+  font-size: 16px;
+}
+
+.option:hover {
+  background: #217dbb;
+}
+
+.option.selected {
+  background: #3498db;
+  color: white;
+}
+
+.next-button {
+  margin-top: 20px;
+  padding: 10px 20px;
+  font-size: 16px;
+  border: none;
+  border-radius: 5px;
+  background-color: #3498db;
+  color: white;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.next-button:hover {
+  background-color: #217dbb;
+}
+
+#script.js
+// Questions data with 13 questions
+const quizData = [
+  {
+      question: "HAVE YOU PRACTICED SPORT OR ANY PHYSICAL ACTIVITY OUT OF YOUR WORKING HOURS AT LEAST 30 MIN OR MORE DURING THE LAST MONTH?",
+      options: [
+          "3 times or more per week",
+          "1 or 2 times per week",
+          "Less than 4 times per month",
+          "I don't practice sport during the month"
+      ],
+      correct: "1 or 2 times per week"
+  },
+  {
+      question: "DO YOU CONSUME FRUITS OR VEGETABLES REGULARLY IN YOUR DIET?",
+      options: [
+          "Yes, every day",
+          "Yes, but not every day",
+          "Rarely",
+          "Never"
+      ],
+      correct: "Yes, every day"
+  },
+  {
+      question: "HOW MANY HOURS OF SLEEP DO YOU GET ON AVERAGE PER NIGHT?",
+      options: [
+          "Less than 4 hours",
+          "4-6 hours",
+          "6-8 hours",
+          "More than 8 hours"
+      ],
+      correct: "6-8 hours"
+  },
+  {
+      question: "HOW OFTEN DO YOU DRINK WATER DAILY?",
+      options: [
+          "Less than 1 liter",
+          "1-2 liters",
+          "2-3 liters",
+          "More than 3 liters"
+      ],
+      correct: "2-3 liters"
+  },
+  {
+      question: "HOW MANY DAYS PER WEEK DO YOU EXERCISE?",
+      options: [
+          "0 days",
+          "1-2 days",
+          "3-4 days",
+          "5 or more days"
+      ],
+      correct: "3-4 days"
+  },
+  {
+      question: "DO YOU SPEND TIME OUTDOORS DAILY?",
+      options: [
+          "Yes, more than an hour",
+          "Yes, less than an hour",
+          "Rarely",
+          "Never"
+      ],
+      correct: "Yes, more than an hour"
+  },
+  {
+      question: "HOW OFTEN DO YOU EAT FAST FOOD?",
+      options: [
+          "Every day",
+          "Once a week",
+          "Once a month",
+          "Rarely"
+      ],
+      correct: "Once a month"
+  },
+  {
+      question: "HOW DO YOU RATE YOUR STRESS LEVEL?",
+      options: [
+          "Very high",
+          "Moderate",
+          "Low",
+          "None"
+      ],
+      correct: "Moderate"
+  },
+  {
+      question: "DO YOU ENGAGE IN ANY RELAXATION TECHNIQUES?",
+      options: [
+          "Yes, regularly",
+          "Occasionally",
+          "Rarely",
+          "Never"
+      ],
+      correct: "Yes, regularly"
+  },
+  {
+      question: "HOW MANY MEALS DO YOU HAVE DAILY?",
+      options: [
+          "1 or 2 meals",
+          "3 meals",
+          "4-5 meals",
+          "More than 5 meals"
+      ],
+      correct: "3 meals"
+  },
+  {
+      question: "HOW OFTEN DO YOU VISIT A DOCTOR FOR A REGULAR CHECKUP?",
+      options: [
+          "Once a year",
+          "Every 2-3 years",
+          "Only when unwell",
+          "Never"
+      ],
+      correct: "Once a year"
+  },
+  {
+      question: "DO YOU HAVE A CONSISTENT SLEEP SCHEDULE?",
+      options: [
+          "Yes, always",
+          "Most of the time",
+          "Rarely",
+          "Never"
+      ],
+      correct: "Most of the time"
+  },
+  {
+      question: "DO YOU LIMIT YOUR SCREEN TIME BEFORE BED?",
+      options: [
+          "Yes, always",
+          "Sometimes",
+          "Rarely",
+          "Never"
+      ],
+      correct: "Sometimes"
+  }
+];
+
+let currentQuestionIndex = 0;
+let score = 0;
+
+// Function to load a question
+function loadQuestion() {
+    const questionData = quizData[currentQuestionIndex];
+    const questionText = document.querySelector('.question-text');
+    const optionsContainer = document.querySelector('.options-container');
+
+    // Update question text
+    questionText.innerText = questionData.question;
+
+    // Clear previous options and render new ones
+    optionsContainer.innerHTML = "";
+    questionData.options.forEach(option => {
+        const button = document.createElement('button');
+        button.classList.add('option');
+        button.innerText = option;
+        button.onclick = () => selectAnswer(button);
+        optionsContainer.appendChild(button);
+    });
+}
+
+// Function to handle answer selection
+function selectAnswer(option) {
+    const allOptions = document.querySelectorAll('.option');
+    allOptions.forEach(btn => btn.classList.remove('selected'));
+    option.classList.add('selected');
+}
+
+// Function to handle "Next" button click
+function nextQuestion() {
+    const selectedOption = document.querySelector('.option.selected');
+    if (!selectedOption) {
+        alert('Please select an answer before proceeding.');
+        return;
+    }
+
+    // Check if the answer is correct
+    const selectedAnswer = selectedOption.innerText;
+    const correctAnswer = quizData[currentQuestionIndex].correct;
+    if (selectedAnswer === correctAnswer) {
+        score++;
+    }
+
+    // Move to the next question or show the results
+    currentQuestionIndex++;
+    if (currentQuestionIndex < quizData.length) {
+        loadQuestion();
+    } else {
+        showResults();
+    }
+}
+
+// Function to display quiz results
+function showResults() {
+    const quizContainer = document.querySelector('.quiz-container');
+    quizContainer.innerHTML = `
+        <h2>Your Score: ${score}/${quizData.length}</h2>
+        <p>Thank you for taking the quiz!</p>
+        <button onclick="restartQuiz()">Restart Quiz</button>
+    `;
+}
+
+// Function to restart the quiz
+function restartQuiz() {
+    currentQuestionIndex = 0;
+    score = 0;
+    loadQuestion();
+}
+
+// Load the first question when the page loads
+document.addEventListener('DOMContentLoaded', loadQuestion);
